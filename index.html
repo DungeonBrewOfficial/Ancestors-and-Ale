@@ -169,8 +169,9 @@
 
     <script>
         const drinkAttributes = {
-			namePrefixes: ["Iron", "Steel", "Copper", "Bronze", "Brass", "Lead", "Granite", "Obsidian", "Onyx", "Marble", "Slate", "Basalt", "Quartz", "Crimson", "Ruby", "Amber", "Charcoal", "Ivory", "Pale", "Ebony", "Ashen", "Frost", "Fire", "Flame", "Cold", "Ember", "Smoke", "Blaze", "Shadow", "Stone"],
-			nameAdjectives: ["Crown", "Shield", "Axe", "Hammer", "Spear", "Hearth", "Forge", "Smith", "Anvil", "Mountain", "Peak", "Summit", "Barrow", "Hollow", "Vault", "Ring", "Blade", "Throne", "Mace", "Sword", "Chain", "Spindle", "Gate", "Deep", "Dagger", "Tomb", "Bastion", "Haven", "Spire"],			
+			optionalNameElements: ["Reserve", "Select", "Special", "Limited Batch", "Exclusive", "Premium", "Signature Brew", "Master’s Choice", "Grand Reserve", "First Brew", "Heritage", "Private Stock", "Artisan Crafted", "Legacy", "Choice", "Elite", "Original", "Vintage"],
+			namePrefixes: ["Iron", "Steel", "Copper", "Bronze", "Brass", "Lead", "Granite", "Obsidian", "Onyx", "Marble", "Slate", "Basalt", "Quartz", "Crimson", "Ruby", "Amber", "Charcoal", "Ivory", "Pale", "Ebony", "Ashen", "Frost", "Fire", "Flame", "Cold", "Ember", "Smoke", "Burning", "Shadow", "Stone", "Emerald", "Winter", "Autumn", "Summer", "Spring", "Diamond", "Sapphire", "Amethyst", "Opal", "Garnet"],
+			nameAdjectives: ["Crown", "Shield", "Axe", "Hammer", "Spear", "Hearth", "Forge", "Smith", "Anvil", "Mountain", "Peak", "Summit", "Barrow", "Hollow", "Vault", "Ring", "Blade", "Throne", "Mace", "Sword", "Chain", "Spindle", "Gate", "Deep", "Dagger", "Tomb", "Bastion", "Haven", "Spire", "Hill", "River", "Lake", "Block", "Canyon", "Valley", "Stream", "Void", "Ridge", "Basin", "Brow", "Cave", "Crag", "Crater", "Divide", "Dome", "Crest", "Hogback", "Hollow", "Meadow", "Monument"],			
 			nameTypes: ["Bock", "Dark Ale", "Hoppy Pale Ale", "Lager", "Pale Ale", "Pilsner", "Porter", "Saison", "Sour", "Stout", "Tripel", "Wheat Beer"],
             liquidShades: ["Light", "Medium", "Deep", "Dark", "Reddish", "Purplish", "Ruby"],
             liquidHues: ["Straw", "Yellow", "Gold", "Amber", "Copper", "Brown", "Walnut", "Black"],
@@ -342,9 +343,15 @@
 			return `${texture.toLowerCase()} foam with a ${hue.toLowerCase()} hue`;
 		}
 
-		function roll(table) {
+		function roll(table, usedSet = new Set()) {
 			if (!table || table.length === 0) return "undefined"; // Fallback for empty tables
-			let result = table[Math.floor(Math.random() * table.length)];
+
+			// Filter unused options if a usedSet is provided
+			const unusedOptions = table.filter(item => !usedSet.has(item));
+			const selectionPool = unusedOptions.length > 0 ? unusedOptions : table;
+
+			let result = selectionPool[Math.floor(Math.random() * selectionPool.length)];
+			usedSet.add(result); // Track used result to prevent repetition
 
 			// Handle special hop modifiers
 			if (["Brilliant", "Pungent", "Sharp"].includes(result) && Math.random() < 0.5) {
@@ -382,13 +389,16 @@
 			return Math.random() < 0.5 && synonym ? synonym[Math.floor(Math.random() * synonym.length)] : primary;
 		}
 		
-		function rollWithSynonymsNoRepeats(attribute, synonyms, usedWords = new Set()) {
+		function rollWithSynonymsNoRepeats(attribute, synonyms, usedWords = new Set(), filter = null) {
 			let primary, synonym, attempts = 0;
 			do {
 				primary = attribute[Math.floor(Math.random() * attribute.length)];
 				synonym = synonyms[primary]
 					? synonyms[primary][Math.floor(Math.random() * synonyms[primary].length)]
 					: null;
+
+				if (filter && !filter(primary, synonym)) continue; // Skip invalid combinations
+
 				attempts++;
 			} while ((usedWords.has(primary) || (synonym && usedWords.has(synonym))) && attempts < 10);
 
@@ -406,13 +416,42 @@
 			const vowels = ["a", "e", "i", "o", "u"];
 			return vowels.includes(word.trim().toLowerCase()[0]) ? "an" : "a";
 		}
+		
+		const recentNames = [];
 
-        function generateDrinkName() {
-            const prefix = roll(drinkAttributes.namePrefixes);
-            const adjective = roll(drinkAttributes.nameAdjectives);
-            const type = roll(drinkAttributes.nameTypes);
-            return `${prefix} ${adjective} ${type}`;
-        }
+		function addNameToHistory(name, maxHistory = 10) {
+			if (recentNames.length >= maxHistory) {
+				recentNames.shift(); // Remove the oldest name
+			}
+			recentNames.push(name);
+		}
+		const recentOptionalElements = new Set();
+
+		function generateDrinkName() {
+			const prefix = roll(drinkAttributes.namePrefixes);
+			const adjective = roll(drinkAttributes.nameAdjectives);
+			const type = roll(drinkAttributes.nameTypes);
+
+			// Optional element logic
+			let optionalElement = "";
+			if (Math.random() < 0.1) { // 10% chance
+				let attempts = 0;
+				do {
+					optionalElement = roll(drinkAttributes.optionalNameElements);
+					attempts++;
+				} while (recentOptionalElements.has(optionalElement) && attempts < 10);
+
+				recentOptionalElements.add(optionalElement);
+				if (recentOptionalElements.size > 5) recentOptionalElements.delete([...recentOptionalElements][0]); // Manage history size
+			}
+
+			// Debugging log for optional element
+			if (debug) {
+				console.log("Generated Optional Element:", optionalElement || "None");
+			}
+
+			return `${prefix} ${adjective} ${type}${optionalElement ? ` ${optionalElement}` : ""}`;
+		}
 		
 		function rollColorForType(type, usedColors = new Set()) {
 			const validColors = beerTypeColorRanges[type] || ["Amber"]; // Fallback to Amber
@@ -426,9 +465,8 @@
 			return color;
 		}
 
-
-			const savedDrinks = []; // Global array for saved drinks
-			const usedDrinkNames = new Set(); // Global set to track used names
+		const savedDrinks = []; // Global array for saved drinks
+		const usedDrinkNames = new Set(); // Global set to track used names
 
 			// Save the generated drink to the on-screen list
 			document.getElementById("saveDrink").addEventListener("click", () => {
@@ -467,25 +505,35 @@
 				document.getElementById("savedDrinksList").appendChild(listItem);
 			});
 			
+		const usedDrinkComponents = new Set();
+
 			function generateUniqueName() {
 				let name;
 				let attempts = 0;
 
-				// Try generating a unique name
 				do {
-					name = generateDrinkName(); // Calls your existing generateDrinkName() function
+					const prefix = roll(drinkAttributes.namePrefixes);
+					const adjective = roll(drinkAttributes.nameAdjectives);
+					const type = roll(drinkAttributes.nameTypes);
+					const optionalElement = Math.random() < 0.1 ? roll(drinkAttributes.optionalNameElements) : "";
+
+					// Debugging log for optional element
+					if (debug) {
+						console.log("Generated Optional Element:", optionalElement || "None");
+					}
+
+					name = `${prefix} ${adjective} ${type}${optionalElement ? ` ${optionalElement}` : ""}`;
 					attempts++;
-				} while (usedDrinkNames.has(name) && attempts < 10);
+				} while (usedDrinkComponents.has(name) && attempts < 10);
 
 				if (attempts >= 10) {
 					console.warn("Failed to generate a unique drink name after 10 attempts.");
-					return "Unnamed Drink"; // Fallback if all names are duplicates
+					return "Unnamed Drink";
 				}
 
-				usedDrinkNames.add(name); // Mark the name as used
+				usedDrinkComponents.add(name);
 				return name;
 			}
-
 
 			// Download the full list of saved drinks
 			document.getElementById("downloadList").addEventListener("click", () => {
@@ -503,10 +551,10 @@
 				link.click();
 			});
 
-			// Generate a random drink
 			function generateDrink() {
 				const debug = true;
 				const usedWords = new Set();
+				const recentNames = []; // Add a recentNames array for tracking
 
 				// Retrieve user selections
 				const selectedType = document.getElementById("beerType").value;
@@ -522,10 +570,24 @@
 					console.log("Include Off-Flavors:", includeOffFlavors);
 				}
 
-				// Generate drink attributes
+				// Generate drink name with optional element
 				const nameType = selectedType === "any" ? roll(drinkAttributes.nameTypes) : selectedType;
-				const name = `${roll(drinkAttributes.namePrefixes)} ${roll(drinkAttributes.nameAdjectives)} ${nameType}`;
+				const optionalNameElement = Math.random() < 0.5 ? roll(["Reserve", "Select", "Special Edition", "Exclusive"]) : ""; // Optional addition
+				const name = `${roll(drinkAttributes.namePrefixes)} ${roll(drinkAttributes.nameAdjectives)} ${nameType}${
+					optionalNameElement ? ` ${optionalNameElement}` : ""
+				}`;
 
+				// Check if the name is recently used
+				if (recentNames.includes(name)) {
+					console.log("Name recently used, regenerating...");
+					return generateDrink(); // Retry if the name is in recent history
+				}
+
+				// Track the name in recent history
+				recentNames.push(name);
+				if (recentNames.length > 10) recentNames.shift(); // Keep the history size manageable
+
+				// Generate drink attributes
 				const foamTexture = roll(drinkAttributes.foamTextures);
 				const foamHue = roll(drinkAttributes.foamHues);
 				const foamDescription = resolveNone(foamTexture, foamHue);
@@ -534,14 +596,20 @@
 				const liquidHue = rollColorForType(nameType);
 
 				const clarity = roll(drinkAttributes.clarity); // Roll clarity first
-				const appearance = `${liquidShade} ${liquidHue} with ${getArticle(clarity)} ${clarity} clarity, ${foamDescription ? `featuring a ${foamDescription}` : "sporting a smooth surface"}.`;
+				const appearance = `${liquidShade} ${liquidHue} with ${getArticle(clarity)} ${clarity} clarity, ${
+					foamDescription ? `featuring a ${foamDescription}` : "sporting a smooth surface"
+				}.`;
 
 				// Add off-flavors conditionally
 				const offFlavor = includeOffFlavors && Math.random() < 0.1
 					? ` and ${resolveOffFlavors(drinkAttributes.offFlavors)}`
 					: "";
 
-				const scent = `${rollWithSynonymsNoRepeats(drinkAttributes.malts, maltsSynonyms, usedWords)} and ${rollWithSynonymsNoRepeats(drinkAttributes.hops, hopsSynonyms, usedWords)}${offFlavor}.`;
+				const scent = `${rollWithSynonymsNoRepeats(drinkAttributes.malts, maltsSynonyms, usedWords)} and ${rollWithSynonymsNoRepeats(
+					drinkAttributes.hops,
+					hopsSynonyms,
+					usedWords
+				)}${offFlavor}.`;
 
 				const fruitFlavor = includeFruits
 					? rollWithSynonymsNoRepeats(drinkAttributes.fruits, fruitsSynonyms, usedWords)
@@ -550,15 +618,19 @@
 					? rollWithSynonymsNoRepeats(drinkAttributes.spices, spicesSynonyms, usedWords)
 					: "subtle";
 
-				let tasteBase = `${rollWithSynonymsNoRepeats(drinkAttributes.malts, maltsSynonyms, usedWords)} and ${rollWithSynonymsNoRepeats(drinkAttributes.hops, hopsSynonyms, usedWords)}`;
-				let taste = tasteBase;
+				let tasteBase = `${rollWithSynonymsNoRepeats(drinkAttributes.malts, maltsSynonyms, usedWords)} and ${rollWithSynonymsNoRepeats(
+					drinkAttributes.hops,
+					hopsSynonyms,
+					usedWords
+				)}`;
+				let taste = `${rollWithSynonymsNoRepeats(drinkAttributes.malts, maltsSynonyms, usedWords)} and ${rollWithSynonymsNoRepeats(drinkAttributes.hops, hopsSynonyms, usedWords)}`;
 
 				if (fruitFlavor && spiceFlavor) {
-					taste += `, highlighting ${fruitFlavor} notes, complemented by ${spiceFlavor}.`;
+					taste += `, highlighting ${fruitFlavor} notes and balanced by ${spiceFlavor}.`;
 				} else if (fruitFlavor) {
-					taste += `, showcasing ${fruitFlavor} notes.`;
+					taste += `, featuring ${fruitFlavor} notes.`;
 				} else if (spiceFlavor) {
-					taste += `, with subtle hints of ${spiceFlavor}.`;
+					taste += `, underscored by ${spiceFlavor}.`;
 				} else {
 					taste += ", offering a well-rounded flavor.";
 				}
