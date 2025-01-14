@@ -78,13 +78,12 @@
 			gap: 10px;
 		}
 		.scrollable-box {
-			max-height: 600px; /* Set the height of the box */
-			overflow-y: auto; /* Enable vertical scrolling */
-			border: 1px solid #444; /* Add a border for better visibility */
+			max-height: 550px;
+			overflow-y: auto;
+			border: 1px solid #555; /* Softer border */
 			padding: 10px;
-			background: #222; /* Match the container background */
-			border-radius: 5px;
-			text-align: left; /* Align content to the left */
+			background: linear-gradient(180deg, #222, #333); /* Gradient background */
+			border-radius: 8px; /* Rounded corners */
 		}
 
 		.scrollable-box li:nth-child(even) {
@@ -336,12 +335,12 @@
             return rollAgain(table);
         }
 
-        function resolveNone(texture, hue) {
-            if (texture === "None") {
-                return ""; // Omit foam entirely if texture is "None"
-            }
-            return `${texture.toLowerCase()} foam with a ${hue.toLowerCase()} hue`;
-        }
+		function resolveNone(texture, hue) {
+			if (texture === "None") {
+				return "a smooth surface with no foam"; // Improved fallback
+			}
+			return `${texture.toLowerCase()} foam with a ${hue.toLowerCase()} hue`;
+		}
 
 		function roll(table) {
 			if (!table || table.length === 0) return "undefined"; // Fallback for empty tables
@@ -393,6 +392,11 @@
 				attempts++;
 			} while ((usedWords.has(primary) || (synonym && usedWords.has(synonym))) && attempts < 10);
 
+			if (attempts >= 10) {
+				console.warn("Exhausted attempts to find a unique synonym.");
+				return primary; // Fallback to primary attribute
+			}
+
 			const result = Math.random() < 0.5 && synonym ? synonym : primary;
 			usedWords.add(result);
 			return result;
@@ -411,23 +415,20 @@
         }
 		
 		function rollColorForType(type, usedColors = new Set()) {
-			const validColors = beerTypeColorRanges[type];
-			if (!validColors || validColors.length === 0) {
-				return "Amber"; // Default fallback
-			}
-
+			const validColors = beerTypeColorRanges[type] || ["Amber"]; // Fallback to Amber
 			let color;
 			let attempts = 0;
 			do {
 				color = validColors[Math.floor(Math.random() * validColors.length)];
 				attempts++;
 			} while (usedColors.has(color) && attempts < 10);
-
 			usedColors.add(color);
 			return color;
 		}
 
+
 			const savedDrinks = []; // Global array for saved drinks
+			const usedDrinkNames = new Set(); // Global set to track used names
 
 			// Save the generated drink to the on-screen list
 			document.getElementById("saveDrink").addEventListener("click", () => {
@@ -454,6 +455,7 @@
 				// Add the drink to the savedDrinks array
 				savedDrinks.push(drinkDetails);
 
+
 				// Update the saved drinks list on-screen
 				const listItem = document.createElement("li");
 				listItem.innerHTML = `<strong>${drinkName}</strong><br>
@@ -464,6 +466,26 @@
 				listItem.style.marginBottom = "10px";
 				document.getElementById("savedDrinksList").appendChild(listItem);
 			});
+			
+			function generateUniqueName() {
+				let name;
+				let attempts = 0;
+
+				// Try generating a unique name
+				do {
+					name = generateDrinkName(); // Calls your existing generateDrinkName() function
+					attempts++;
+				} while (usedDrinkNames.has(name) && attempts < 10);
+
+				if (attempts >= 10) {
+					console.warn("Failed to generate a unique drink name after 10 attempts.");
+					return "Unnamed Drink"; // Fallback if all names are duplicates
+				}
+
+				usedDrinkNames.add(name); // Mark the name as used
+				return name;
+			}
+
 
 			// Download the full list of saved drinks
 			document.getElementById("downloadList").addEventListener("click", () => {
@@ -512,7 +534,7 @@
 				const liquidHue = rollColorForType(nameType);
 
 				const clarity = roll(drinkAttributes.clarity); // Roll clarity first
-				const appearance = `${liquidShade} ${liquidHue} with ${getArticle(clarity)} ${clarity} clarity${foamDescription ? ` and ${foamDescription}` : ""}.`;
+				const appearance = `${liquidShade} ${liquidHue} with ${getArticle(clarity)} ${clarity} clarity, ${foamDescription ? `featuring a ${foamDescription}` : "sporting a smooth surface"}.`;
 
 				// Add off-flavors conditionally
 				const offFlavor = includeOffFlavors && Math.random() < 0.1
@@ -532,13 +554,13 @@
 				let taste = tasteBase;
 
 				if (fruitFlavor && spiceFlavor) {
-					taste += `, offering ${fruitFlavor} notes and spiced with ${spiceFlavor}`;
+					taste += `, highlighting ${fruitFlavor} notes, complemented by ${spiceFlavor}.`;
 				} else if (fruitFlavor) {
-					taste += `, featuring ${fruitFlavor} notes`;
+					taste += `, showcasing ${fruitFlavor} notes.`;
 				} else if (spiceFlavor) {
-					taste += `, with subtle hints of ${spiceFlavor}`;
+					taste += `, with subtle hints of ${spiceFlavor}.`;
 				} else {
-					taste += ", offering a balanced flavor profile."; // Ensure smooth fallback
+					taste += ", offering a well-rounded flavor.";
 				}
 
 				const afterfeel = roll(drinkAttributes.afterfeel).trim();
@@ -546,21 +568,20 @@
 
 				// Debugging logs
 				if (debug) {
-					console.log("Generated Drink Details:");
-					console.log({
+					console.log("Generated Drink Details:", {
 						Name: name,
 						Appearance: appearance,
 						Scent: scent,
 						Taste: taste,
 						Mouthfeel: mouthfeel,
+						Rolls: {
+							Malts: drinkAttributes.malts,
+							Hops: drinkAttributes.hops,
+							Fruits: includeFruits ? drinkAttributes.fruits : null,
+							Spices: includeSpices ? drinkAttributes.spices : null,
+							OffFlavors: includeOffFlavors ? drinkAttributes.offFlavors : null,
+						},
 					});
-
-					console.log("Debugging Rolls:");
-					console.log("Malts Roll:", drinkAttributes.malts);
-					console.log("Hops Roll:", drinkAttributes.hops);
-					if (includeFruits) console.log("Fruits Roll:", drinkAttributes.fruits);
-					if (includeSpices) console.log("Spices Roll:", drinkAttributes.spices);
-					if (includeOffFlavors) console.log("Off-Flavors Roll:", drinkAttributes.offFlavors);
 				}
 
 				// Update drink details on the page
