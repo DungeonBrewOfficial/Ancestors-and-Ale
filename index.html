@@ -27,12 +27,16 @@
             padding: 20px;
             text-align: center;
         }
-		.branding {
+        .branding {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 20px; /* Add spacing below the logo */
         }
-        .branding img {
-            max-width: 100px; /* Adjust the logo size as needed */
+        
+        .branding-logo {
+            max-width: 150px; /* Set the maximum width for the logo */
+            height: auto; /* Maintain aspect ratio */
+            display: inline-block; /* Ensure it centers properly */
+            margin: 0 auto; /* Center the logo */
         }
         h1 {
             font-size: 24px;
@@ -103,14 +107,12 @@
 <body>
     <div class="container">
         <div class="branding">
-			<a href="https://www.patreon.com/DungeonBrew" target="_blank">
-				<img src="Updated Logo.png" alt="Company Logo">
-			</a>
+            <a href="https://www.patreon.com/DungeonBrew" target="_blank">
+                <img src="Updated Logo.png" alt="Company Logo" class="branding-logo">
+            </a>
         </div>
-    <div class="container">
-	<div class="container">
-		<h1>ANCESTORS & ALE</h1>
-		<h1>Random Drink Generator</h1>
+        <h1>ANCESTORS & ALE</h1>
+        <h1>Random Drink Generator</h1>
 
 		<!-- User Controls Section -->
 		<div style="margin-bottom: 20px;">
