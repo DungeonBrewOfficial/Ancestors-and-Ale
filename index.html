@@ -594,11 +594,11 @@
 
 			const fruitFlavor = includeFruits
 				? rollWithSynonymsNoRepeats(drinkAttributes.fruits, fruitsSynonyms, usedWords, (primary) => !["balanced", "subtle"].includes(primary))
-				: "balanced";
+				: "";
 
 			const spiceFlavor = includeSpices
 				? rollWithSynonymsNoRepeats(drinkAttributes.spices, spicesSynonyms, usedWords, (primary) => !["balanced", "subtle"].includes(primary))
-				: "subtle";
+				: "";
 
 			let taste = `${capitalizeFirst(rollWithSynonymsNoRepeats(drinkAttributes.malts, maltsSynonyms, usedWords))} and ${rollWithSynonymsNoRepeats(
 				drinkAttributes.hops,
