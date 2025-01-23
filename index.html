@@ -184,7 +184,7 @@
             spices: ["Pepper", "Clover", "Anise", "Woodruff", "Cinnamon", "Vanilla", "Nutmeg", "Ginger", "Fennel", "Saffron", "Juniper", "Maple", "Heather", "Hibiscus", "Coriander", "Elderflower", "Peppermint"],
             mouthfeel: ["Thick", "Creamy", "Watery", "Balanced", "Full", "Heavy", "Medium", "Light", "Dense", "Viscous", "Thin", "Crisp", "Flat", "Round", "Sharp", "Silky", "Prickly", "Wispy", "Velvety", "Delicate", "Spritzy", "Robust", "Hot"],
             afterfeel: ["Astringent", "Sticky", "Smooth", "Dry", "Oily", "Bitter", "Warming", "Effervescent", "Clean", "Gassy", "Vanishing", "Tingly"],
-            offFlavors: ["Medicinal", "Chemical", "Rotten", "Barnyard", "Rancid", "Muddy", "Clove", "Green Leaves", "Sweat", "Buttery", "Vinegary", "Peanut-like"]
+            offFlavors: ["Medicinal", "Chemical-like", "Rotten", "Barnyard", "Rancid", "Muddy", "Clove-like", "Grassy", "Sweaty", "Buttery", "Vinegary", "Peanut-like"]
         };
 
         const maltsSynonyms = {
@@ -290,6 +290,21 @@
 			"Wheat Beer": ["Straw", "Gold"]
 		};
 
+		const offFlavorsSynonyms = {
+			Medicinal: ["antiseptic", "clinical", "chemical"],
+			"Chemical-like": ["synthetic", "metallic", "artificial"],
+			Rotten: ["spoiled", "putrid", "decayed"],
+			Barnyard: ["earthy", "manure-like", "animalistic"],
+			Rancid: ["stale", "rank", "off-putting"],
+			Muddy: ["murky", "stagnant", "dirty"],
+			"Clove-like": ["spicy", "phenolic", "overpowering"],
+			Grassy: ["hay-like", "leafy", "green"],
+			Sweaty: ["musky", "funky", "pungent"],
+			Buttery: ["oily", "creamy", "diacetyl"],
+			Vinegary: ["acidic", "sharp", "sour"],
+			"Peanut-like": ["nutty", "peanut-buttery", "diacetyl"],
+		};
+
         function rollAgain(table) {
             let result;
             do {
@@ -329,9 +344,26 @@
 		}
 
 
-        function resolveOffFlavors(table) {
-            return rollAgain(table);
-        }
+		function resolveOffFlavors(table, usedSet = new Set()) {
+			let primary, synonym;
+			let attempts = 0;
+
+			do {
+				primary = rollAgain(table);
+				synonym = offFlavorsSynonyms[primary]
+					? offFlavorsSynonyms[primary][Math.floor(Math.random() * offFlavorsSynonyms[primary].length)].toLowerCase()
+					: primary.toLowerCase();
+				attempts++;
+			} while (usedSet.has(synonym) && attempts < 10);
+
+			if (attempts >= 10) {
+				console.warn("Exhausted attempts to find a unique off-flavor synonym.");
+			}
+
+			usedSet.add(synonym); // Track the used synonym
+			const article = getArticle(synonym);
+			return `${article} ${synonym}`;
+		}
 
 		function resolveNone(texture, hue) {
 			if (texture === "None") {
@@ -557,88 +589,142 @@
 				link.click();
 			});
 
-		function generateDrink() {
-			const debug = true;
-			const usedWords = new Set();
-			const recentNames = [];
+			function generateDrink() {
+				const debug = true;
+				const usedWords = new Set();
 
-			const selectedType = document.getElementById("beerType").value;
-			const includeFruits = document.getElementById("includeFruits").checked;
-			const includeSpices = document.getElementById("includeSpices").checked;
-			const includeOffFlavors = document.getElementById("includeOffFlavors").checked;
+				// Retrieve user selections
+				const selectedType = document.getElementById("beerType").value;
+				const includeFruits = document.getElementById("includeFruits").checked;
+				const includeSpices = document.getElementById("includeSpices").checked;
+				const includeOffFlavors = document.getElementById("includeOffFlavors").checked;
 
-			const nameType = selectedType === "any" ? roll(drinkAttributes.nameTypes) : selectedType;
-			const name = `${capitalize(roll(drinkAttributes.namePrefixes))} ${capitalize(
-				roll(drinkAttributes.nameAdjectives)
-			)} ${nameType}`;
+				// Debugging logs for user preferences
+				if (debug) {
+					console.log("Selected Beer Type:", selectedType);
+					console.log("Include Fruits:", includeFruits);
+					console.log("Include Spices:", includeSpices);
+					console.log("Include Off-Flavors:", includeOffFlavors);
+				}
 
-			const foamTexture = roll(drinkAttributes.foamTextures);
-			const foamHue = roll(drinkAttributes.foamHues);
-			const foamDescription = resolveNone(foamTexture, foamHue);
+				// Generate drink name with optional element
+				const nameType = selectedType === "any" ? roll(drinkAttributes.nameTypes) : selectedType;
+				const optionalNameElement = Math.random() < 0.5 ? roll(["Reserve", "Select", "Special Edition", "Exclusive"]) : ""; // Optional addition
+				const name = `${roll(drinkAttributes.namePrefixes)} ${roll(drinkAttributes.nameAdjectives)} ${nameType}${
+					optionalNameElement ? ` ${optionalNameElement}` : ""
+				}`;
 
-			const liquidShade = roll(drinkAttributes.liquidShades);
-			const liquidHue = rollColorForType(nameType);
+				// Check if the name is recently used
+				if (recentNames.includes(name)) {
+					console.log("Name recently used, regenerating...");
+					return generateDrink(); // Retry if the name is in recent history
+				}
 
-			const clarity = roll(drinkAttributes.clarity);
-			const appearance = `${capitalize(liquidShade)} ${capitalize(liquidHue)} with ${getArticle(clarity)} ${clarity.toLowerCase()} clarity${
-				foamDescription ? `, featuring ${foamDescription.toLowerCase()}` : ", with no foam"
-			}.`;
+				// Track the name in recent history
+				recentNames.push(name);
+				if (recentNames.length > 10) recentNames.shift(); // Keep the history size manageable
 
-			const offFlavor = includeOffFlavors && Math.random() < 0.1 ? ` and ${resolveOffFlavors(drinkAttributes.offFlavors).toLowerCase()}` : "";
+				// Generate drink attributes
+				const foamTexture = roll(drinkAttributes.foamTextures);
+				const foamHue = roll(drinkAttributes.foamHues);
+				const foamDescription = resolveNone(foamTexture, foamHue);
 
-			const scent = `${capitalizeFirst(rollWithSynonymsNoRepeats(drinkAttributes.malts, maltsSynonyms, usedWords))} and ${rollWithSynonymsNoRepeats(
-				drinkAttributes.hops,
-				hopsSynonyms,
-				usedWords
-			).toLowerCase()}${offFlavor}.`;
+				const liquidShade = roll(drinkAttributes.liquidShades);
+				const liquidHue = rollColorForType(nameType);
 
-			const fruitFlavor = includeFruits
-				? rollWithSynonymsNoRepeats(drinkAttributes.fruits, fruitsSynonyms, usedWords, (primary) => !["balanced", "subtle"].includes(primary))
-				: "";
+				const clarity = roll(drinkAttributes.clarity);
+				const appearance = `${capitalizeFirst(liquidShade)} ${liquidHue.toLowerCase()} with ${getArticle(clarity)} ${clarity.toLowerCase()} clarity${
+					foamDescription ? `, featuring ${foamDescription.toLowerCase()}` : ""
+				}.`;
 
-			const spiceFlavor = includeSpices
-				? rollWithSynonymsNoRepeats(drinkAttributes.spices, spicesSynonyms, usedWords, (primary) => !["balanced", "subtle"].includes(primary))
-				: "";
+				// Generate a single base off-flavor for both scent and taste
+				const baseOffFlavor = includeOffFlavors && Math.random() < 0.5
+					? rollAgain(drinkAttributes.offFlavors)
+					: null;
 
-			let taste = `${capitalizeFirst(rollWithSynonymsNoRepeats(drinkAttributes.malts, maltsSynonyms, usedWords))} and ${rollWithSynonymsNoRepeats(
-				drinkAttributes.hops,
-				hopsSynonyms,
-				usedWords
-			).toLowerCase()}`;
+				// Generate unique synonyms for scent and taste based on the same base off-flavor
+				const scentOffFlavor = baseOffFlavor
+					? `${getArticle(offFlavorsSynonyms[baseOffFlavor][0])} ${offFlavorsSynonyms[baseOffFlavor][0]}`
+					: "";
 
-			if (fruitFlavor && spiceFlavor) {
-				taste += `, with ${fruitFlavor} and ${spiceFlavor}.`;
-			} else if (fruitFlavor) {
-				taste += `, featuring ${fruitFlavor} notes.`;
-			} else if (spiceFlavor) {
-				taste += `, underscored by ${spiceFlavor}.`;
-			} else {
-				taste += ", offering a well-rounded flavor.";
+				const tasteOffFlavor = baseOffFlavor
+					? `${getArticle(offFlavorsSynonyms[baseOffFlavor][1])} ${offFlavorsSynonyms[baseOffFlavor][1]}`
+					: "";
+
+				// Generate base terms for malts, hops, fruits, and spices
+				const baseMalt = roll(drinkAttributes.malts);
+				const baseHop = roll(drinkAttributes.hops);
+				const baseFruit = includeFruits ? roll(drinkAttributes.fruits) : null;
+				const baseSpice = includeSpices ? roll(drinkAttributes.spices) : null;
+
+				// Generate unique synonyms for malts and hops for scent and flavor
+				const maltScent = capitalizeFirst(rollWithSynonymsNoRepeats([baseMalt], maltsSynonyms, usedWords));
+				const hopScent = rollWithSynonymsNoRepeats([baseHop], hopsSynonyms, usedWords).toLowerCase();
+
+				// Ensure malt and hop flavors are distinct synonyms from scent
+				const maltFlavor = capitalizeFirst(rollWithSynonymsNoRepeats([baseMalt], maltsSynonyms, usedWords));
+				const hopFlavor = rollWithSynonymsNoRepeats([baseHop], hopsSynonyms, usedWords).toLowerCase();
+
+				// Generate unique synonyms for fruits and spices for flavor
+				const fruitFlavor = baseFruit
+					? rollWithSynonymsNoRepeats([baseFruit], fruitsSynonyms, usedWords).toLowerCase()
+					: null;
+
+				const spiceFlavor = baseSpice
+					? rollWithSynonymsNoRepeats([baseSpice], spicesSynonyms, usedWords).toLowerCase()
+					: null;
+
+				// Generate the scent description
+				const scentBase = `${maltScent} and ${hopScent}`;
+
+				const scent = scentOffFlavor
+					? `${scentBase}, masked by ${scentOffFlavor} aroma.`
+					: `${scentBase}.`;
+
+				// Generate the taste description
+				let tasteBase = `${maltFlavor} and ${hopFlavor}`;
+
+				if (tasteOffFlavor) {
+					tasteBase += `, dimmed by ${tasteOffFlavor} flavor`;
+				}
+
+				let taste = tasteBase;
+
+				if (fruitFlavor && spiceFlavor) {
+					taste += `, with ${fruitFlavor} complemented by ${spiceFlavor}.`;
+				} else if (fruitFlavor) {
+					taste += `, featuring ${fruitFlavor}.`;
+				} else if (spiceFlavor) {
+					taste += `, accented by hints of ${spiceFlavor}.`;
+				} else {
+					taste += "."; // Ensure proper punctuation when no options are selected
+				}
+
+				const afterfeel = roll(drinkAttributes.afterfeel).trim();
+				const mouthfeel = `A ${roll(drinkAttributes.mouthfeel).toLowerCase()} texture, with ${getArticle(afterfeel)} ${afterfeel.toLowerCase()} finish.`;
+
+				// Debugging logs
+				if (debug) {
+					console.log("Generated Drink Details:", {
+						Name: name,
+						Appearance: appearance,
+						Scent: scent,
+						Taste: taste,
+						Mouthfeel: mouthfeel,
+					});
+				}
+
+				// Update drink details on the page
+				document.getElementById("drinkName").textContent = name;
+				document.getElementById("appearance").textContent = appearance;
+				document.getElementById("scent").textContent = scent;
+				document.getElementById("taste").textContent = taste;
+				document.getElementById("mouthfeel").textContent = mouthfeel;
+
+				if (debug) {
+					console.log("Drink successfully generated and displayed on the page.");
+				}
 			}
-
-			const afterfeel = roll(drinkAttributes.afterfeel).trim();
-			const mouthfeel = `A ${roll(drinkAttributes.mouthfeel).toLowerCase()} texture, with ${getArticle(afterfeel)} ${afterfeel.toLowerCase()} finish.`;
-
-			if (debug) {
-				console.log("Generated Drink Details:", {
-					Name: name,
-					Appearance: appearance,
-					Scent: scent,
-					Taste: taste,
-					Mouthfeel: mouthfeel,
-				});
-			}
-
-			document.getElementById("drinkName").textContent = name;
-			document.getElementById("appearance").textContent = appearance;
-			document.getElementById("scent").textContent = scent;
-			document.getElementById("taste").textContent = taste;
-			document.getElementById("mouthfeel").textContent = mouthfeel;
-
-			if (debug) {
-				console.log("Drink successfully generated and displayed on the page.");
-			}
-		}
 
 	document.getElementById("generate-drink").addEventListener("click", generateDrink);
 
