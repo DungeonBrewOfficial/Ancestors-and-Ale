@@ -1,75 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Drink Generator</title>
-            <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #1e1e1e;
-            color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            /* Ensure body takes full viewport height and prevents overflow */
-            min-height: 100vh;
-            overflow-y: auto;
-        }
-        .container {
-            background: #333;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 700px;
-            padding: 20px;
-            text-align: center;
-            /* Add some margin for smaller screens */
-            margin: 20px auto;
-        }
-        .branding {
-            text-align: center;
-            margin-bottom: 20px; /* Add spacing below the logo */
-        }
-        
-        .branding-logo {
-            max-width: 150px; /* Set the maximum width for the logo */
-            height: auto; /* Maintain aspect ratio */
-            display: inline-block; /* Ensure it centers properly */
-            margin: 0 auto; /* Center the logo */
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #ffdd57;
-        }
-        button {
-            background: #222;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            /* Add some margin between buttons */
-            margin: 5px;
-        }
-        button:hover {
-            background: #e65c54;
-        }
-        .drink-details {
-            margin-top: 20px;
-            background: #444;
-            border-radius: 5px;
-            padding: 15px;
-            text-align: left;
-        }
-        .drink-details p {
-            margin: 5px 0;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Drink Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #1e1e1e;
+            color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #333;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 700px;
+            padding: 20px;
+            text-align: center;
+        }
+        .branding {
+            text-align: center;
+            margin-bottom: 20px; /* Add spacing below the logo */
+        }
+        
+        .branding-logo {
+            max-width: 150px; /* Set the maximum width for the logo */
+            height: auto; /* Maintain aspect ratio */
+            display: inline-block; /* Ensure it centers properly */
+            margin: 0 auto; /* Center the logo */
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #ffdd57;
+        }
+        button {
+            background: #222;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #e65c54;
+        }
+        .drink-details {
+            margin-top: 20px;
+            background: #444;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: left;
+        }
+        .drink-details p {
+            margin: 5px 0;
+        }
 		 label {
 			margin-right: 10px;
 		}
@@ -106,27 +100,7 @@
 			text-align: left; /* Ensure individual list items are left-aligned */
 			margin-bottom: 10px; /* Add spacing between items */
 		}
-        /* Added styles for better mobile responsiveness */
-        @media (max-width: 600px) {
-            .container {
-                padding: 15px;
-            }
-            h1 {
-                font-size: 20px;
-            }
-            button {
-                width: 100%; /* Make buttons full width on small screens */
-                margin-bottom: 10px; /* Add space below buttons */
-            }
-             div[style="margin-bottom: 20px;"] {
-                flex-direction: column; /* Stack controls vertically on small screens */
-                align-items: center;
-             }
-             label, select, input[type="checkbox"] {
-                margin: 5px 0; /* Adjust margins for stacked elements */
-             }
-        }
-    </style>
+    </style>
 </head>
 <body>
     <div class="container">
