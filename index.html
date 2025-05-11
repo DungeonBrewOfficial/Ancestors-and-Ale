@@ -1,70 +1,75 @@
-     
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Drink Generator</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #1e1e1e;
-            color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            background: #333;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 700px;
-            padding: 20px;
-            text-align: center;
-        }
-        .branding {
-            text-align: center;
-            margin-bottom: 20px; /* Add spacing below the logo */
-        }
-        
-        .branding-logo {
-            max-width: 150px; /* Set the maximum width for the logo */
-            height: auto; /* Maintain aspect ratio */
-            display: inline-block; /* Ensure it centers properly */
-            margin: 0 auto; /* Center the logo */
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #ffdd57;
-        }
-        button {
-            background: #222;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background: #e65c54;
-        }
-        .drink-details {
-            margin-top: 20px;
-            background: #444;
-            border-radius: 5px;
-            padding: 15px;
-            text-align: left;
-        }
-        .drink-details p {
-            margin: 5px 0;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Drink Generator</title>
+            <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #1e1e1e;
+            color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* Ensure body takes full viewport height and prevents overflow */
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+        .container {
+            background: #333;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 700px;
+            padding: 20px;
+            text-align: center;
+            /* Add some margin for smaller screens */
+            margin: 20px auto;
+        }
+        .branding {
+            text-align: center;
+            margin-bottom: 20px; /* Add spacing below the logo */
+        }
+        
+        .branding-logo {
+            max-width: 150px; /* Set the maximum width for the logo */
+            height: auto; /* Maintain aspect ratio */
+            display: inline-block; /* Ensure it centers properly */
+            margin: 0 auto; /* Center the logo */
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #ffdd57;
+        }
+        button {
+            background: #222;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            /* Add some margin between buttons */
+            margin: 5px;
+        }
+        button:hover {
+            background: #e65c54;
+        }
+        .drink-details {
+            margin-top: 20px;
+            background: #444;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: left;
+        }
+        .drink-details p {
+            margin: 5px 0;
+        }
 		 label {
 			margin-right: 10px;
 		}
@@ -101,19 +106,38 @@
 			text-align: left; /* Ensure individual list items are left-aligned */
 			margin-bottom: 10px; /* Add spacing between items */
 		}
-    </style>
+        /* Added styles for better mobile responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            button {
+                width: 100%; /* Make buttons full width on small screens */
+                margin-bottom: 10px; /* Add space below buttons */
+            }
+             div[style="margin-bottom: 20px;"] {
+                flex-direction: column; /* Stack controls vertically on small screens */
+                align-items: center;
+             }
+             label, select, input[type="checkbox"] {
+                margin: 5px 0; /* Adjust margins for stacked elements */
+             }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="branding">
-            <a href="https://www.patreon.com/DungeonBrew" target="_blank">
-                <img src="Updated Logo.png" alt="Company Logo" class="branding-logo">
-            </a>
-        </div>
-        <h1>ANCESTORS & ALE</h1>
-        <h1>Random Drink Generator</h1>
+    <div class="container">
+        <div class="branding">
+            <a href="https://www.patreon.com/DungeonBrew" target="_blank">
+                <img src="Updated Logo.png" alt="Company Logo" class="branding-logo">
+            </a>
+        </div>
+        <h1>ANCESTORS & ALE</h1>
+        <h1>Random Drink Generator</h1>
 
-		<!-- User Controls Section -->
 		<div style="margin-bottom: 20px;">
 			<label for="beerType">Choose Beer Type:</label>
 			<select id="beerType">
@@ -145,12 +169,10 @@
 			</label>
 		</div>
 
-		<!-- Buttons for Generating and Saving Drinks -->
 		<button id="generate-drink">Generate Drink</button>
 		<button id="saveDrink">Save Drink</button>
 		<button id="downloadList">Download Drink List</button>
 
-		<!-- Display Generated Drink -->
 		<div class="drink-details" id="drinkDetails">
 			<h2 id="drinkName" style="font-size: 1.5rem; color: #ffdd57; margin: 10px 0;"></h2>
 			<p><strong>Appearance:</strong> <span id="appearance"></span></p>
@@ -159,7 +181,6 @@
 			<p><strong>Mouthfeel:</strong> <span id="mouthfeel"></span></p>
 		</div>
 
-		<!-- Saved Drinks Section -->
 		<h3>Saved Drinks:</h3>
 		<div class="scrollable-box">
 			<ul id="savedDrinksList" style="list-style-type: none; padding: 0;"></ul>
@@ -167,27 +188,33 @@
 
 	</div>
 
-    <script>
-        const drinkAttributes = {
+    <script>
+        // Constants for configuration
+        const MAX_NAME_HISTORY = 10;
+        const OPTIONAL_NAME_CHANCE = 0.1; // 10% chance for an optional name element
+        const OFF_FLAVOR_CHANCE = 0.5; // 50% chance to include off-flavors
+        const MAX_ROLL_ATTEMPTS = 30; // Increased attempts for rolling unique terms
+
+        const drinkAttributes = {
 			optionalNameElements: ["Reserve", "Select", "Special", "Limited Batch", "Exclusive", "Premium", "Signature Brew", "Master’s Choice", "Grand Reserve", "First Brew", "Heritage", "Private Stock", "Artisan Crafted", "Legacy", "Choice", "Elite", "Original", "Vintage"],
 			namePrefixes: ["Iron", "Steel", "Copper", "Bronze", "Brass", "Lead", "Granite", "Obsidian", "Onyx", "Marble", "Slate", "Basalt", "Quartz", "Crimson", "Ruby", "Amber", "Charcoal", "Ivory", "Pale", "Ebony", "Ashen", "Frost", "Fire", "Flame", "Cold", "Ember", "Smoke", "Burning", "Shadow", "Stone", "Emerald", "Winter", "Autumn", "Summer", "Spring", "Diamond", "Sapphire", "Amethyst", "Opal", "Garnet"],
 			nameAdjectives: ["Crown", "Shield", "Axe", "Hammer", "Spear", "Hearth", "Forge", "Smith", "Anvil", "Mountain", "Peak", "Summit", "Barrow", "Hollow", "Vault", "Ring", "Blade", "Throne", "Mace", "Sword", "Chain", "Spindle", "Gate", "Deep", "Dagger", "Tomb", "Bastion", "Haven", "Spire", "Hill", "River", "Lake", "Block", "Canyon", "Valley", "Stream", "Void", "Ridge", "Basin", "Brow", "Cave", "Crag", "Crater", "Divide", "Dome", "Crest", "Hogback", "Hollow", "Meadow", "Monument"],			
 			nameTypes: ["Bock", "Dark Ale", "Hoppy Pale Ale", "Lager", "Pale Ale", "Pilsner", "Porter", "Saison", "Sour", "Stout", "Tripel", "Wheat Beer"],
-            liquidShades: ["Light", "Medium", "Deep", "Dark", "Reddish", "Purplish", "Ruby"],
-            liquidHues: ["Straw", "Yellow", "Gold", "Amber", "Copper", "Brown", "Walnut", "Black"],
-            clarity: ["Brilliant", "Clear", "Slightly Hazy", "Hazy", "Cloudy", "Opaque"],
-            foamTextures: ["None", "Poor", "Moderate", "Good", "Thin", "Wispy", "Fluffy", "Mousse-like"],
-            foamHues: ["White", "Cream", "Tan", "Yellow", "Brownish", "Reddish", "Amber", "Gold"],
-            malts: ["Malty", "Biscuity", "Bread-like", "Grainy", "Rich", "Deep", "Roasted", "Coffee", "Caramel", "Toffee-like", "Molasses", "Smokey", "Sweet", "Autumnal", "Burnt Cream", "Oatmeal", "Complex", "Layered"],
-            hops: ["Pine", "Citrus", "Earthy", "Musty", "Spicy", "Grassy", "Bright", "Fresh", "Herbal", "Juniper-like", "Lemony", "Floral", "Spring-like", "Minty", "Spruce-like", "Orangey", "Zippy", "Brilliant", "Pungent", "Sharp"],
-            fruits: ["Citrus", "Lemon", "Orange", "Cherry", "Strawberry", "Blueberry", "Blackberry", "Wild Berry", "Apricot", "Rhubarb", "Apple", "Blackcurrant", "Peach", "Red Plum", "Blue Plum", "Date", "Gooseberry", "Cranberry", "Fig", "Tart"],
-            spices: ["Pepper", "Clover", "Anise", "Woodruff", "Cinnamon", "Vanilla", "Nutmeg", "Ginger", "Fennel", "Saffron", "Juniper", "Maple", "Heather", "Hibiscus", "Coriander", "Elderflower", "Peppermint"],
-            mouthfeel: ["Thick", "Creamy", "Watery", "Balanced", "Full", "Heavy", "Medium", "Light", "Dense", "Viscous", "Thin", "Crisp", "Flat", "Round", "Sharp", "Silky", "Prickly", "Wispy", "Velvety", "Delicate", "Spritzy", "Robust", "Hot"],
-            afterfeel: ["Astringent", "Sticky", "Smooth", "Dry", "Oily", "Bitter", "Warming", "Effervescent", "Clean", "Gassy", "Vanishing", "Tingly"],
-            offFlavors: ["Medicinal", "Chemical-like", "Rotten", "Barnyard", "Rancid", "Muddy", "Clove-like", "Grassy", "Sweaty", "Buttery", "Vinegary", "Peanut-like"]
-        };
+            liquidShades: ["Light", "Medium", "Deep", "Dark", "Reddish", "Purplish", "Ruby"],
+            liquidHues: ["Straw", "Yellow", "Gold", "Amber", "Copper", "Brown", "Walnut", "Black"],
+            clarity: ["Brilliant", "Clear", "Slightly Hazy", "Hazy", "Cloudy", "Opaque"],
+            foamTextures: ["None", "Poor", "Moderate", "Good", "Thin", "Wispy", "Fluffy", "Mousse-like"],
+            foamHues: ["White", "Cream", "Tan", "Yellow", "Brownish", "Reddish", "Amber", "Gold"],
+            malts: ["Malty", "Biscuity", "Bread-like", "Grainy", "Rich", "Deep", "Roasted", "Coffee", "Caramel", "Toffee-like", "Molasses", "Smokey", "Sweet", "Autumnal", "Burnt Cream", "Oatmeal", "Complex", "Layered"],
+            hops: ["Pine", "Citrus", "Earthy", "Musty", "Spicy", "Grassy", "Bright", "Fresh", "Herbal", "Juniper-like", "Lemony", "Floral", "Spring-like", "Minty", "Spruce-like", "Orangey", "Zippy", "Brilliant", "Pungent", "Sharp"],
+            fruits: ["Citrus", "Lemon", "Orange", "Cherry", "Strawberry", "Blueberry", "Blackberry", "Wild Berry", "Apricot", "Rhubarb", "Apple", "Blackcurrant", "Peach", "Red Plum", "Blue Plum", "Date", "Gooseberry", "Cranberry", "Fig", "Tart"],
+            spices: ["Pepper", "Clover", "Anise", "Woodruff", "Cinnamon", "Vanilla", "Nutmeg", "Ginger", "Fennel", "Saffron", "Juniper", "Maple", "Heather", "Hibiscus", "Coriander", "Elderflower", "Peppermint"],
+            mouthfeel: ["Thick", "Creamy", "Watery", "Balanced", "Full", "Heavy", "Medium", "Light", "Dense", "Viscous", "Thin", "Crisp", "Flat", "Round", "Sharp", "Silky", "Prickly", "Wispy", "Velvety", "Delicate", "Spritzy", "Robust", "Hot"],
+            afterfeel: ["Astringent", "Sticky", "Smooth", "Dry", "Oily", "Bitter", "Warming", "Effervescent", "Clean", "Gassy", "Vanishing", "Tingly"],
+            offFlavors: ["Medicinal", "Chemical-like", "Rotten", "Barnyard", "Rancid", "Muddy", "Clove-like", "Grassy", "Sweaty", "Buttery", "Vinegary", "Peanut-like"]
+        };
 
-        const maltsSynonyms = {
+        const maltsSynonyms = {
 			Malty: ["toasty notes", "nutty tones", "biscuity sweetness", "cereal-like richness"],
 			Biscuity: ["dry cracker flavors", "crumbly sweetness", "mild malt notes"],
 			"Bread-like": ["yeasty flavors", "doughy tones", "toasted crust notes"],
@@ -204,9 +231,9 @@
 			Autumnal: ["spiced malt", "toasty warmth", "seasonal sweetness"],
 			"Burnt Cream": ["scorched caramel", "toasted sweetness", "rich undertones"],
 			Oatmeal: ["smooth malt tones", "subtle sweetness", "creamy richness"],
-            Complex: ["Layered", "Multifaceted", "Robust"],
-            Layered: ["Complex", "Multinoted", "Varied"],
-        };
+            Complex: ["Layered", "Multifaceted", "Robust"],
+            Layered: ["Complex", "Multinoted", "Varied"],
+        };
 
 		const hopsSynonyms = {
 			Pine: ["resinous tones", "woody aromas", "piney sharpness"],
@@ -219,7 +246,7 @@
 			Fresh: ["cool zest", "crisp herbal tones", "invigorating freshness"],
 			Herbal: ["aromatic herbs", "delicate floral hints", "herbal complexity"],
 			"Juniper-like": ["woody resin", "juniper tones", "evergreen sharpness"],
-			Lemony: ["zesty lemon", "citrusy brightness", "tart aromas"],
+			Lemony: ["zesty lemon", "bright citrus", "tart aromas"],
 			Floral: ["perfumed florals", "aromatic blooms", "delicate floral notes"],
 			"Spring-like": ["fresh buds", "budding herbs", "springtime brightness"],
 			Minty: ["refreshing mint", "cool tones", "invigorating crispness"],
@@ -305,46 +332,58 @@
 			"Peanut-like": ["nutty", "peanut-buttery", "diacetyl"],
 		};
 
-        function rollAgain(table) {
-            let result;
-            do {
-                result = table[Math.floor(Math.random() * table.length)];
-            } while (result === "Roll Again");
-            return result;
-        }
+        // --- Helper Functions ---
 
-		function resolveComplex(table) {
-			const first = rollAgain(table);
-			const second = rollAgain(table);
+        function rollAgain(table) {
+            let result;
+            do {
+                result = table[Math.floor(Math.random() * table.length)];
+            } while (result === "Roll Again");
+            return result;
+        }
+
+		function resolveComplex(table, usedWords) {
+			// Ensure we roll from the malts table for complex/layered malt notes
+			const first = rollWithSynonymsNoRepeats(drinkAttributes.malts, maltsSynonyms, usedWords);
+			const second = rollWithSynonymsNoRepeats(drinkAttributes.malts, maltsSynonyms, usedWords);
 			return `complex ${first.toLowerCase()} and ${second.toLowerCase()} notes`;
 		}
 
-		function resolveLayered(table) {
-			const first = rollAgain(table);
-			const second = rollAgain(table);
+		function resolveLayered(table, usedWords) {
+			// Ensure we roll from the malts table for complex/layered malt tones
+			const first = rollWithSynonymsNoRepeats(drinkAttributes.malts, maltsSynonyms, usedWords);
+			const second = rollWithSynonymsNoRepeats(drinkAttributes.malts, maltsSynonyms, usedWords);
 			return `layered ${first.toLowerCase()} and ${second.toLowerCase()} tones`;
 		}
 
-        function resolveRollMultiple(table, count) {
-            const results = [];
-            for (let i = 0; i < count; i++) {
-                results.push(rollAgain(table));
-            }
-            return results.join(", ");
-        }
+        function resolveRollMultiple(table, count, usedWords, excludeWords = new Set()) {
+            const results = [];
+            for (let i = 0; i < count; i++) {
+                // Pass the correct synonyms object based on the table being rolled
+                let synonyms = {};
+                if (table === drinkAttributes.malts) synonyms = maltsSynonyms;
+                else if (table === drinkAttributes.hops) synonyms = hopsSynonyms;
+                else if (table === drinkAttributes.fruits) synonyms = fruitsSynonyms;
+                else if (table === drinkAttributes.spices) synonyms = spicesSynonyms;
 
-        function resolveTart(table) {
-            const reroll = rollAgain(table);
-            return `Tart ${reroll}`;
-        }
+                results.push(rollWithSynonymsNoRepeats(table, synonyms, usedWords, excludeWords));
+            }
+            return results.join(", ");
+        }
 
-		function resolveHopModifier(modifier, table) {
-			const baseHop = rollAgain(table);
+        function resolveTart(table, usedWords) {
+            // Ensure we roll from the fruits table for tart fruit
+            const reroll = rollWithSynonymsNoRepeats(drinkAttributes.fruits, fruitsSynonyms, usedWords);
+            return `Tart ${reroll}`;
+        }
+
+		function resolveHopModifier(modifier, table, usedWords, excludeWords = new Set()) {
+            // Ensure we roll from the hops table for hop modifier
+			const baseHop = rollWithSynonymsNoRepeats(drinkAttributes.hops, hopsSynonyms, usedWords, excludeWords);
 			return `${modifier.toLowerCase()} ${baseHop.toLowerCase()}`;
 		}
 
-
-		function resolveOffFlavors(table, usedSet = new Set()) {
+		function resolveOffFlavors(table, usedWords, excludeWords = new Set()) {
 			let primary, synonym;
 			let attempts = 0;
 
@@ -354,13 +393,29 @@
 					? offFlavorsSynonyms[primary][Math.floor(Math.random() * offFlavorsSynonyms[primary].length)].toLowerCase()
 					: primary.toLowerCase();
 				attempts++;
-			} while (usedSet.has(synonym) && attempts < 10);
+			} while (((usedWords.has(synonym) || usedWords.has(primary.toLowerCase())) || (excludeWords.has(synonym) || excludeWords.has(primary.toLowerCase()))) && attempts < MAX_ROLL_ATTEMPTS); // Check against usedWords AND excludeWords with increased attempts
 
-			if (attempts >= 10) {
+			if (attempts >= MAX_ROLL_ATTEMPTS) {
 				console.warn("Exhausted attempts to find a unique off-flavor synonym.");
+				// Fallback: Return a generic or the primary term if unique synonym not found
+                const availableOptions = [];
+                if (!usedWords.has(primary.toLowerCase()) && !excludeWords.has(primary.toLowerCase())) {
+                    availableOptions.push(primary.toLowerCase());
+                }
+                if (synonym && !usedWords.has(synonym) && !excludeWords.has(synonym)) {
+                     availableOptions.push(synonym);
+                }
+                 if (availableOptions.length > 0) {
+                    const fallbackResult = availableOptions[Math.floor(Math.random() * availableOptions.length)];
+                    usedWords.add(fallbackResult);
+                    return fallbackResult;
+                 }
+
+				return "an unidentifiable off-flavor"; // Generic fallback if no unique option found
 			}
 
-			usedSet.add(synonym); // Track the used synonym
+			usedWords.add(synonym); // Track the used synonym
+			usedWords.add(primary.toLowerCase()); // Also track the primary term
 			const article = getArticle(synonym);
 			return `${article} ${synonym}`;
 		}
@@ -372,110 +427,154 @@
 			return `${texture.toLowerCase()} foam with ${getArticle(hue)} ${hue.toLowerCase()} hue`;
 		}
 
-		function roll(table, usedSet = new Set()) {
+		// Main rolling function with uniqueness tracking and special case handling
+		function roll(table, usedWords = new Set(), excludeWords = new Set()) {
 			if (!table || table.length === 0) return "undefined"; // Fallback for empty tables
 
-			// Filter unused options if a usedSet is provided
-			const unusedOptions = table.filter(item => !usedSet.has(item));
-			const selectionPool = unusedOptions.length > 0 ? unusedOptions : table;
+			// Filter unused options (case-insensitive check) and excluded options
+			const unusedAndExcludedOptions = table.filter(item => !usedWords.has(item.toLowerCase()) && !excludeWords.has(item.toLowerCase()));
+			const selectionPool = unusedAndExcludedOptions.length > 0 ? unusedAndExcludedOptions : table.filter(item => !usedWords.has(item.toLowerCase())); // If all unused are excluded, use any unused
 
-			let result = selectionPool[Math.floor(Math.random() * selectionPool.length)];
-			usedSet.add(result); // Track used result to prevent repetition
+            // If even unused options are exhausted, allow repeats from the full table as a last resort
+            const finalSelectionPool = selectionPool.length > 0 ? selectionPool : table;
 
-			// Handle special hop modifiers
+            if (finalSelectionPool.length === 0) {
+                console.warn("Roll function: No options available, returning 'something'.");
+                return "something"; // Fallback if no options are available at all
+            }
+
+			let result = finalSelectionPool[Math.floor(Math.random() * finalSelectionPool.length)];
+
+            // Handle special cases that require further rolling/resolution
 			if (["Brilliant", "Pungent", "Sharp"].includes(result) && Math.random() < 0.5) {
-				return resolveHopModifier(result, table);
+				return resolveHopModifier(result, table, usedWords, excludeWords);
 			}
 
 			if (result === "Complex") {
-				return resolveComplex(table);
+				return resolveComplex(table, usedWords); // Complex/Layered don't need excludeWords for their internal rolls
 			}
 			if (result === "Layered") {
-				return resolveLayered(table);
+				return resolveLayered(table, usedWords); // Complex/Layered don't need excludeWords for their internal rolls
 			}
 			if (result === "Tart") {
-				return resolveTart(table);
+				return resolveTart(table, usedWords); // Tart doesn't need excludeWords for its internal reroll
 			}
 			if (result === "Roll Again") {
-				return rollAgain(table);
+				return rollAgain(table); // rollAgain doesn't need usedWords or excludeWords
 			}
 			if (result.includes("Roll x2")) {
-				return resolveRollMultiple(table, 2);
+				return resolveRollMultiple(table, 2, usedWords, excludeWords);
 			}
 			if (result.includes("Roll x3")) {
-				return resolveRollMultiple(table, 3);
+				return resolveRollMultiple(table, 3, usedWords, excludeWords);
 			}
-			if (result.includes("Roll Off-Flavors")) {
-				return resolveOffFlavors(drinkAttributes.offFlavors);
-			}
+			// Note: "Roll Off-Flavors" is handled directly in generateDrink for better control
+
+            // Add the result to usedWords before returning (case-insensitive)
+            usedWords.add(result.toLowerCase());
 
 			return result;
 		}
 		
+        // Helper function to roll a primary term and potentially return a synonym
+        // This function is not currently used in generateDrink, but kept for completeness
 		function rollWithSynonyms(attribute, synonyms) {
 			const primary = attribute[Math.floor(Math.random() * attribute.length)];
 			const synonym = synonyms[primary];
 			return Math.random() < 0.5 && synonym ? synonym[Math.floor(Math.random() * synonym.length)] : primary;
 		}
 		
-		function rollWithSynonymsNoRepeats(attribute, synonyms, usedWords = new Set(), filter = null) {
-			let primary, synonym, attempts = 0;
-			do {
-				primary = attribute[Math.floor(Math.random() * attribute.length)];
-				synonym = synonyms[primary]
-					? synonyms[primary][Math.floor(Math.random() * synonyms[primary].length)].toLowerCase() // Convert synonym to lowercase
-					: null;
+        // Helper function to roll with synonyms while avoiding repeats in the usedWords and excludeWords sets
+		function rollWithSynonymsNoRepeats(attribute, synonyms, usedWords = new Set(), excludeWords = new Set(), filter = null) {
+			let primary, synonym;
+            let attempts = 0;
 
-				// Filter invalid combinations
-				if (filter && !filter(primary, synonym)) continue;
+            // Create a pool of available options (primary term + its synonyms) that are not in usedWords or excludeWords
+            const availableOptions = [];
+            const primaryLower = attribute[0].toLowerCase(); // Assuming attribute has at least one element
 
-				attempts++;
-			} while ((usedWords.has(primary) || (synonym && usedWords.has(synonym))) && attempts < 10);
+            if (!usedWords.has(primaryLower) && !excludeWords.has(primaryLower)) {
+                availableOptions.push(primaryLower);
+            }
 
-			if (attempts >= 10) {
-				console.warn("Exhausted attempts to find a unique synonym.");
-				return primary.toLowerCase(); // Return primary in lowercase
-			}
+            if (synonyms[attribute[0]]) { // Check if synonyms exist for the primary term
+                for (const syn of synonyms[attribute[0]]) {
+                    const synLower = syn.toLowerCase();
+                    if (!usedWords.has(synLower) && !excludeWords.has(synLower)) {
+                        availableOptions.push(synLower);
+                    }
+                }
+            }
 
-			const result = Math.random() < 0.5 && synonym ? synonym : primary.toLowerCase(); // Ensure result is lowercase
-			usedWords.add(result);
+            // If no unique options are available, log a warning and return a fallback
+            if (availableOptions.length === 0) {
+                 console.warn(`Exhausted unique options for primary term "${attribute[0]}". Returning primary term as fallback.`);
+                 // Fallback: Try to return the primary term if it's not in excludeWords
+                 if (!excludeWords.has(primaryLower)) {
+                     usedWords.add(primaryLower);
+                     return primaryLower;
+                 }
+                 // If even the primary term is excluded, return a generic fallback
+                 return "a subtle hint";
+            }
+
+            // If unique options are available, roll from them
+            const result = availableOptions[Math.floor(Math.random() * availableOptions.length)];
+            usedWords.add(result); // Add the chosen result to usedWords
+
+            // If the result was a synonym, also add the primary term to usedWords to prevent its direct use later
+            if (result !== primaryLower && !usedWords.has(primaryLower)) {
+                 usedWords.add(primaryLower);
+            }
+
 			return result;
 		}
 
+        // Helper function to get the correct article ('a' or 'an')
 		function getArticle(word) {
 			const vowels = ["a", "e", "i", "o", "u"];
+            if (!word) return ""; // Handle empty string
 			return vowels.includes(word.trim().toLowerCase()[0]) ? "an" : "a";
 		}
 		
+        // Helper function to capitalize the first letter of a word
 		function capitalize(word) {
+            if (!word) return ""; // Handle empty string
 			return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 		}
 
+        // Helper function to capitalize the first letter of a sentence
 		function capitalizeFirst(sentence) {
-			return sentence.charAt(0).toUpperCase() + sentence.slice(1).toLowerCase();
+            if (!sentence) return ""; // Handle empty string
+			return sentence.charAt(0).toUpperCase() + sentence.slice(1); // Don's lowercase the rest
 		}
 
-		const recentNames = [];
+        // --- Name Generation ---
 
-		function addNameToHistory(name, maxHistory = 10) {
+		const recentNames = []; // Global array to track recently generated full names
+
+		function addNameToHistory(name, maxHistory = MAX_NAME_HISTORY) {
 			if (recentNames.length >= maxHistory) {
 				recentNames.shift(); // Remove the oldest name
 			}
 			recentNames.push(name);
 		}
-		const recentOptionalElements = new Set();
 
-		function generateDrinkName() {
-			const prefix = roll(drinkAttributes.namePrefixes);
-			const adjective = roll(drinkAttributes.nameAdjectives);
-			const type = roll(drinkAttributes.nameTypes);
+		const recentOptionalElements = new Set(); // Global set to track recently used optional name elements
+
+		function generateDrinkName(selectedType, debug) {
+            const nameUsedWords = new Set(); // Use a separate set for name components uniqueness
+
+			const nameType = selectedType === "any" ? roll(drinkAttributes.nameTypes, nameUsedWords) : selectedType;
+			const prefix = roll(drinkAttributes.namePrefixes, nameUsedWords);
+			const adjective = roll(drinkAttributes.nameAdjectives, nameUsedWords);
 
 			// Optional element logic
 			let optionalElement = "";
-			if (Math.random() < 0.1) { // 10% chance
+			if (Math.random() < OPTIONAL_NAME_CHANCE) {
 				let attempts = 0;
 				do {
-					optionalElement = roll(drinkAttributes.optionalNameElements);
+					optionalElement = roll(drinkAttributes.optionalNameElements); // No need for usedWords here, handled by recentOptionalElements
 					attempts++;
 				} while (recentOptionalElements.has(optionalElement) && attempts < 10);
 
@@ -488,9 +587,10 @@
 				console.log("Generated Optional Element:", optionalElement || "None");
 			}
 
-			return `${prefix} ${adjective} ${type}${optionalElement ? ` ${optionalElement}` : ""}`;
+			return `${prefix} ${adjective} ${nameType}${optionalElement ? ` ${optionalElement}` : ""}`;
 		}
 		
+        // Helper function to roll a color based on beer type
 		function rollColorForType(type, usedColors = new Set()) {
 			const validColors = beerTypeColorRanges[type] || ["Amber"]; // Fallback to Amber
 			let color;
@@ -503,8 +603,9 @@
 			return color;
 		}
 
+        // --- Saved Drinks Logic ---
+
 		const savedDrinks = []; // Global array for saved drinks
-		const usedDrinkNames = new Set(); // Global set to track used names
 
 			// Save the generated drink to the on-screen list
 			document.getElementById("saveDrink").addEventListener("click", () => {
@@ -543,36 +644,6 @@
 				document.getElementById("savedDrinksList").appendChild(listItem);
 			});
 			
-		const usedDrinkComponents = new Set();
-
-			function generateUniqueName() {
-				let name;
-				let attempts = 0;
-
-				do {
-					const prefix = roll(drinkAttributes.namePrefixes);
-					const adjective = roll(drinkAttributes.nameAdjectives);
-					const type = roll(drinkAttributes.nameTypes);
-					const optionalElement = Math.random() < 0.1 ? roll(drinkAttributes.optionalNameElements) : "";
-
-					// Debugging log for optional element
-					if (debug) {
-						console.log("Generated Optional Element:", optionalElement || "None");
-					}
-
-					name = `${prefix} ${adjective} ${type}${optionalElement ? ` ${optionalElement}` : ""}`;
-					attempts++;
-				} while (usedDrinkComponents.has(name) && attempts < 10);
-
-				if (attempts >= 10) {
-					console.warn("Failed to generate a unique drink name after 10 attempts.");
-					return "Unnamed Drink";
-				}
-
-				usedDrinkComponents.add(name);
-				return name;
-			}
-
 			// Download the full list of saved drinks
 			document.getElementById("downloadList").addEventListener("click", () => {
 				if (savedDrinks.length === 0) {
@@ -589,9 +660,11 @@
 				link.click();
 			});
 
+        // --- Main Generation Function ---
+
 			function generateDrink() {
-				const debug = true;
-				const usedWords = new Set();
+				const debug = true; // Keep debug inside the function if only used here
+				const usedWords = new Set(); // Set to track used words/synonyms within this generation
 
 				// Retrieve user selections
 				const selectedType = document.getElementById("beerType").value;
@@ -607,79 +680,96 @@
 					console.log("Include Off-Flavors:", includeOffFlavors);
 				}
 
-				// Generate drink name with optional element
-				const nameType = selectedType === "any" ? roll(drinkAttributes.nameTypes) : selectedType;
-				const optionalNameElement = Math.random() < 0.5 ? roll(["Reserve", "Select", "Special Edition", "Exclusive"]) : ""; // Optional addition
-				const name = `${roll(drinkAttributes.namePrefixes)} ${roll(drinkAttributes.nameAdjectives)} ${nameType}${
-					optionalNameElement ? ` ${optionalNameElement}` : ""
-				}`;
+				// Generate drink name with optional element and retry if recently used
+				let name = "";
+                let nameAttempts = 0;
+                do {
+                    name = generateDrinkName(selectedType, debug);
+                    nameAttempts++;
+                } while (recentNames.includes(name) && nameAttempts < 10); // Limit name generation attempts
 
-				// Check if the name is recently used
-				if (recentNames.includes(name)) {
-					console.log("Name recently used, regenerating...");
-					return generateDrink(); // Retry if the name is in recent history
-				}
+                if (nameAttempts >= 10 && debug) {
+                    console.warn("Could not generate a unique name after 10 attempts.");
+                }
 
 				// Track the name in recent history
-				recentNames.push(name);
-				if (recentNames.length > 10) recentNames.shift(); // Keep the history size manageable
+				addNameToHistory(name); // Use the helper function
 
 				// Generate drink attributes
-				const foamTexture = roll(drinkAttributes.foamTextures);
-				const foamHue = roll(drinkAttributes.foamHues);
+				const foamTexture = roll(drinkAttributes.foamTextures, usedWords);
+				const foamHue = roll(drinkAttributes.foamHues, usedWords);
 				const foamDescription = resolveNone(foamTexture, foamHue);
 
-				const liquidShade = roll(drinkAttributes.liquidShades);
-				const liquidHue = rollColorForType(nameType);
+				const liquidShade = roll(drinkAttributes.liquidShades, usedWords);
+				const liquidHue = rollColorForType(selectedType, usedWords); // Use selectedType here
 
-				const clarity = roll(drinkAttributes.clarity);
+				const clarity = roll(drinkAttributes.clarity, usedWords);
 				const appearance = `${capitalizeFirst(liquidShade)} ${liquidHue.toLowerCase()} with ${getArticle(clarity)} ${clarity.toLowerCase()} clarity${
 					foamDescription ? `, featuring ${foamDescription.toLowerCase()}` : ""
 				}.`;
 
-				// Generate a single base off-flavor for both scent and taste
-				const baseOffFlavor = includeOffFlavors && Math.random() < 0.5
-					? rollAgain(drinkAttributes.offFlavors)
-					: null;
+				// Generate off-flavors for scent and taste ensuring uniqueness
+				let scentOffFlavor = "";
+				let tasteOffFlavor = "";
+				if (includeOffFlavors && Math.random() < OFF_FLAVOR_CHANCE) { // Chance to include off-flavors
+                    // Generate the first off-flavor and add it to usedWords
+                    const offFlavor1 = resolveOffFlavors(drinkAttributes.offFlavors, usedWords);
+                    scentOffFlavor = offFlavor1;
+                    tasteOffFlavor = offFlavor1; // Initially assume the same
 
-				// Generate unique synonyms for scent and taste based on the same base off-flavor
-				const scentOffFlavor = baseOffFlavor
-					? `${getArticle(offFlavorsSynonyms[baseOffFlavor][0])} ${offFlavorsSynonyms[baseOffFlavor][0]}`
-					: "";
-
-				const tasteOffFlavor = baseOffFlavor
-					? `${getArticle(offFlavorsSynonyms[baseOffFlavor][1])} ${offFlavorsSynonyms[baseOffFlavor][1]}`
-					: "";
-
-				// Generate base terms for malts, hops, fruits, and spices
-				const baseMalt = roll(drinkAttributes.malts);
-				const baseHop = roll(drinkAttributes.hops);
-				const baseFruit = includeFruits ? roll(drinkAttributes.fruits) : null;
-				const baseSpice = includeSpices ? roll(drinkAttributes.spices) : null;
+                    // Try to generate a second *distinct* off-flavor if there are more options available
+                    // Pass the first off-flavor as an exclusion for the second roll
+                    if (Math.random() < 0.5 && drinkAttributes.offFlavors.length > usedWords.size) {
+                         const excludeOffFlavor = new Set([offFlavor1.toLowerCase().replace(/^(a|an)\s+/, '')]); // Exclude the first off-flavor (handle article)
+                         const offFlavor2 = resolveOffFlavors(drinkAttributes.offFlavors, usedWords, excludeOffFlavor);
+                         // Assign the second off-flavor to taste to ensure distinction
+                         tasteOffFlavor = offFlavor2;
+                    }
+				}
 
 				// Generate unique synonyms for malts and hops for scent and flavor
-				const maltScent = capitalizeFirst(rollWithSynonymsNoRepeats([baseMalt], maltsSynonyms, usedWords));
-				const hopScent = rollWithSynonymsNoRepeats([baseHop], hopsSynonyms, usedWords).toLowerCase();
+                // Ensure scent and flavor terms for the same base attribute are distinct
 
-				// Ensure malt and hop flavors are distinct synonyms from scent
-				const maltFlavor = capitalizeFirst(rollWithSynonymsNoRepeats([baseMalt], maltsSynonyms, usedWords));
-				const hopFlavor = rollWithSynonymsNoRepeats([baseHop], hopsSynonyms, usedWords).toLowerCase();
+                // Generate base terms once
+                const baseMalt = roll(drinkAttributes.malts, usedWords);
+                const baseHop = roll(drinkAttributes.hops, usedWords);
+
+                // Generate scent terms based on the base terms
+                const maltScent = capitalizeFirst(rollWithSynonymsNoRepeats([baseMalt], maltsSynonyms, usedWords));
+                console.log("Generated Malt Scent:", maltScent); // Debugging log
+
+                const hopScent = rollWithSynonymsNoRepeats([baseHop], hopsSynonyms, usedWords).toLowerCase();
+                console.log("Generated Hop Scent:", hopScent); // Debugging log
+
+
+                // Then generate flavor terms, excluding the scent terms for the SAME base attribute
+                const excludeMaltScentTerm = new Set([maltScent.toLowerCase()]); // Exclude the generated malt scent term
+                const maltFlavor = capitalizeFirst(rollWithSynonymsNoRepeats([baseMalt], maltsSynonyms, usedWords, excludeMaltScentTerm));
+                console.log("Generated Malt Flavor:", maltFlavor); // Debugging log
+
+
+                const excludeHopScentTerm = new Set([hopScent.toLowerCase()]); // Exclude the generated hop scent term
+                const hopFlavor = rollWithSynonymsNoRepeats([baseHop], hopsSynonyms, usedWords, excludeHopScentTerm).toLowerCase();
+                console.log("Generated Hop Flavor:", hopFlavor); // Debugging log
+
 
 				// Generate unique synonyms for fruits and spices for flavor
-				const fruitFlavor = baseFruit
-					? rollWithSynonymsNoRepeats([baseFruit], fruitsSynonyms, usedWords).toLowerCase()
+				const baseFruitFlavor = includeFruits ? roll(drinkAttributes.fruits, usedWords) : null;
+				const fruitFlavor = baseFruitFlavor
+					? rollWithSynonymsNoRepeats([baseFruitFlavor], fruitsSynonyms, usedWords).toLowerCase()
 					: null;
 
-				const spiceFlavor = baseSpice
-					? rollWithSynonymsNoRepeats([baseSpice], spicesSynonyms, usedWords).toLowerCase()
+				const baseSpiceFlavor = includeSpices ? roll(drinkAttributes.spices, usedWords) : null;
+				const spiceFlavor = baseSpiceFlavor
+					? rollWithSynonymsNoRepeats([baseSpiceFlavor], spicesSynonyms, usedWords).toLowerCase()
 					: null;
 
 				// Generate the scent description
-				const scentBase = `${maltScent} and ${hopScent}`;
+				let scentBase = `${maltScent} and ${hopScent}`;
 
 				const scent = scentOffFlavor
 					? `${scentBase}, masked by ${scentOffFlavor} aroma.`
-					: `${scentBase}.`;
+					: `${scentBase}.`; // Added period for consistency
 
 				// Generate the taste description
 				let tasteBase = `${maltFlavor} and ${hopFlavor}`;
@@ -700,8 +790,11 @@
 					taste += "."; // Ensure proper punctuation when no options are selected
 				}
 
-				const afterfeel = roll(drinkAttributes.afterfeel).trim();
-				const mouthfeel = `A ${roll(drinkAttributes.mouthfeel).toLowerCase()} texture, with ${getArticle(afterfeel)} ${afterfeel.toLowerCase()} finish.`;
+                // Generate mouthfeel and afterfeel ensuring uniqueness
+				const afterfeel = roll(drinkAttributes.afterfeel, usedWords).trim();
+				const mouthfeel = `A ${roll(drinkAttributes.mouthfeel, usedWords).toLowerCase()} texture, with ${getArticle(afterfeel)} ${afterfeel.toLowerCase()} finish.`; // Added period for consistency
+
+                console.log("Used Words after generation:", usedWords); // Debugging log
 
 				// Debugging logs
 				if (debug) {
@@ -728,6 +821,9 @@
 
 	document.getElementById("generate-drink").addEventListener("click", generateDrink);
 
-    </script>
+    // Initial drink generation on page load
+    window.onload = generateDrink;
+
+    </script>
 </body>
 </html>
